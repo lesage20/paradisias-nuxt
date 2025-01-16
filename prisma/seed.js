@@ -2,41 +2,37 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-async function main() {
-  // Création des rôles par défaut
-  const roles = [
-    {
-      name: 'GERANT',
-      description: 'Gestionnaire de l\'hôtel'
-    },
-    {
-      name: 'ADMIN',
-      description: 'Administrateur système'
-    },
-    {
-      name: 'RECEPTIONIST',
-      description: 'Réceptionniste de l\'hôtel'
-    },
-    {
-      name: 'MENAGERE',
-      description: 'Personnel d\'entretien'
-    }
-  ]
+const roles = [
+  {
+    name: 'GERANT',
+    description: 'Gérant de l\'hôtel'
+  },
+  {
+    name: 'ADMIN',
+    description: 'Administrateur système'
+  },
+  {
+    name: 'RECEPTIONIST',
+    description: 'Réceptionniste'
+  },
+  {
+    name: 'MENAGERE',
+    description: 'Personnel de ménage'
+  }
+]
 
-  console.log('Début de la création des rôles...')
+async function main() {
+  console.log('Début du seed...')
 
   for (const role of roles) {
     await prisma.role.upsert({
       where: { name: role.name },
       update: {},
-      create: {
-        name: role.name,
-        description: role.description
-      }
+      create: role
     })
   }
 
-  console.log('Rôles créés avec succès !')
+  console.log('Seed terminé !')
 }
 
 main()
