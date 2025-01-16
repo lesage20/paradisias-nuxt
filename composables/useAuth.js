@@ -12,6 +12,29 @@ export const useAuth = () => {
         throw error.value
       }
 
+      // Connexion automatique après inscription
+      if (data.value?.user) {
+        // Créer une session pour l'utilisateur
+        const { data: loginData, error: loginError } = await useFetch('/api/auth/login', {
+          method: 'POST',
+          body: {
+            email: userData.email,
+            password: userData.password
+          }
+        })
+
+        if (loginError.value) {
+          throw loginError.value
+        }
+
+        // Stocker les informations dans le store
+        authStore.setUser(loginData.value.user)
+        authStore.setSessionToken(loginData.value.sessionToken)
+
+        // Rediriger vers le tableau de bord
+        await navigateTo('/dashboard')
+      }
+
       return { data: data.value, error: null }
     } catch (err) {
       return {

@@ -40,8 +40,7 @@ const handleRegister = async () => {
       return
     }
 
-    // Redirection vers la page de connexion
-    await navigateTo('/login')
+    // La redirection est maintenant gérée dans le composable useAuth
   } catch (err) {
     error.value = 'Une erreur est survenue lors de l\'inscription'
     console.error('Erreur d\'inscription:', err)
