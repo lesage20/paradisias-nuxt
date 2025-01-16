@@ -32,16 +32,75 @@
             </li>
 
             <!-- Structure -->
-            <li>
-              <NuxtLink to="/structure" :class="[
-                'flex items-center hover:text-gray-300 p-2 rounded-lg transition-colors',
-                $route.path.startsWith('/structure') ? 'bg-gray-700 text-white' : ''
-              ]">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            <li class="relative">
+              <button 
+                @click="toggleStructureMenu"
+                class="w-full flex items-center justify-between hover:text-gray-300 p-2 rounded-lg transition-colors"
+                :class="{ 'bg-gray-700 text-white': $route.path.startsWith('/structure') }"
+              >
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                  <span :class="['ml-2', !isOpen ? 'hidden' : '']">Structure Hôtel</span>
+                </div>
+                <svg
+                  :class="['h-5 w-5 transform transition-transform duration-200', !isOpen ? 'hidden' : '', isStructureMenuOpen ? 'rotate-180' : '']"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
-                <span :class="['ml-2', !isOpen ? 'hidden' : '']">Structure Hôtel</span>
-              </NuxtLink>
+              </button>
+              <div
+                v-show="isStructureMenuOpen && isOpen"
+                class="mt-2 pl-8 space-y-1"
+              >
+                <NuxtLink
+                  to="/structure"
+                  class="block text-sm hover:text-gray-300 py-2 px-3 rounded-lg transition-colors"
+                  :class="{ 'text-white': $route.path === '/structure', 'text-gray-400': $route.path !== '/structure' }"
+                >
+                  Types de Chambres
+                </NuxtLink>
+                <NuxtLink
+                  to="/structure/floors"
+                  class="block text-sm hover:text-gray-300 py-2 px-3 rounded-lg transition-colors"
+                  :class="{ 'text-white': $route.path === '/structure/floors', 'text-gray-400': $route.path !== '/structure/floors' }"
+                >
+                  Étages
+                </NuxtLink>
+                <NuxtLink
+                  to="/structure/rooms"
+                  class="block text-sm hover:text-gray-300 py-2 px-3 rounded-lg transition-colors"
+                  :class="{ 'text-white': $route.path === '/structure/rooms', 'text-gray-400': $route.path !== '/structure/rooms' }"
+                >
+                  Chambres
+                </NuxtLink>
+                <NuxtLink
+                  to="/structure/price-manager"
+                  class="block text-sm hover:text-gray-300 py-2 px-3 rounded-lg transition-colors"
+                  :class="{ 'text-white': $route.path === '/structure/price-manager', 'text-gray-400': $route.path !== '/structure/price-manager' }"
+                >
+                  Gestionnaire de Prix
+                </NuxtLink>
+                <NuxtLink
+                  to="/structure/coupon"
+                  class="block text-sm hover:text-gray-300 py-2 px-3 rounded-lg transition-colors"
+                  :class="{ 'text-white': $route.path === '/structure/coupon', 'text-gray-400': $route.path !== '/structure/coupon' }"
+                >
+                  Coupons
+                </NuxtLink>
+                <NuxtLink
+                  to="/structure/housekeeping"
+                  class="block text-sm hover:text-gray-300 py-2 px-3 rounded-lg transition-colors"
+                  :class="{ 'text-white': $route.path === '/structure/housekeeping', 'text-gray-400': $route.path !== '/structure/housekeeping' }"
+                >
+                  Service d'Entretien
+                </NuxtLink>
+              </div>
             </li>
 
             <!-- Locations -->
@@ -178,18 +237,21 @@
 
 <script setup>
 import { ref } from 'vue'
+
 const isOpen = ref(true)
 const isUserMenuOpen = ref(false)
+const isStructureMenuOpen = ref(false)
 
 const toggleSidebar = () => {
   isOpen.value = !isOpen.value
-  if (!isOpen.value) {
-    isUserMenuOpen.value = false
-  }
 }
 
 const toggleUserMenu = () => {
   isUserMenuOpen.value = !isUserMenuOpen.value
+}
+
+const toggleStructureMenu = () => {
+  isStructureMenuOpen.value = !isStructureMenuOpen.value
 }
 </script>
 
