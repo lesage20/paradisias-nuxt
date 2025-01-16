@@ -11,31 +11,16 @@
     </div>
 
     <form @submit.prevent="handleRegister" class="space-y-4">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div>
-          <label for="firstName" class="block text-sm font-medium text-gray-700">Prénom</label>
-          <div class="mt-1">
-            <input
-              id="firstName"
-              v-model="firstName"
-              type="text"
-              required
-              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label for="lastName" class="block text-sm font-medium text-gray-700">Nom</label>
-          <div class="mt-1">
-            <input
-              id="lastName"
-              v-model="lastName"
-              type="text"
-              required
-              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
+      <div>
+        <label for="fullName" class="block text-sm font-medium text-gray-700">Nom complet</label>
+        <div class="mt-1">
+          <input
+            id="fullName"
+            v-model="fullName"
+            type="text"
+            required
+            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          />
         </div>
       </div>
 
@@ -54,7 +39,9 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+          <label for="password" class="block text-sm font-medium text-gray-700">
+            Mot de passe
+          </label>
           <div class="mt-1">
             <input
               id="password"
@@ -67,7 +54,9 @@
         </div>
 
         <div>
-          <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700">
+            Confirmer le mot de passe
+          </label>
           <div class="mt-1">
             <input
               id="confirmPassword"
@@ -113,8 +102,7 @@ definePageMeta({
   layout: 'auth'
 })
 
-const firstName = ref('')
-const lastName = ref('')
+const fullName = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
@@ -129,8 +117,7 @@ const handleRegister = async () => {
   try {
     // TODO: Implémenter la logique d'inscription
     console.log('Inscription avec:', {
-      firstName: firstName.value,
-      lastName: lastName.value,
+      fullName: fullName.value,
       email: email.value,
       password: password.value,
       acceptTerms: acceptTerms.value
