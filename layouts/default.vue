@@ -2,11 +2,11 @@
   <div class="flex h-screen">
     <!-- Barre latérale -->
     <div :class="[
-      'bg-gray-800 text-white transition-all duration-300',
+      'bg-gray-800 text-white transition-all duration-300 flex flex-col',
       isOpen ? 'w-64' : 'w-16'
     ]">
       <!-- Bouton burger -->
-      <div class="flex  items-center p-4 hover:bg-gray-700">
+      <div class="flex items-center p-4 hover:bg-gray-700">
         <button @click="toggleSidebar" class="flex justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -15,7 +15,7 @@
         <span :class="['ml-3 font-semibold text-lg', !isOpen ? 'hidden' : '']">Paradisias Hotel</span>
       </div>
       <!-- Contenu de la barre latérale -->
-      <div class="p-4">
+      <div class="flex-1 p-4 overflow-y-auto">
         <nav>
           <ul class="space-y-4">
             <!-- Dashboard -->
@@ -139,6 +139,33 @@
           </ul>
         </nav>
       </div>
+      <!-- Menu utilisateur fixé en bas -->
+      <div class="border-t border-gray-700">
+        <div class="p-4">
+          <div class="relative">
+            <button @click="toggleUserMenu" class="w-full flex items-center justify-between hover:bg-gray-700 p-2 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <span :class="['ml-2 text-sm', !isOpen ? 'hidden' : '']">John Doe</span>
+              </div>
+              <svg :class="['h-5 w-5 transform transition-transform', !isOpen ? 'hidden' : '', isUserMenuOpen ? 'rotate-180' : '']" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div v-if="isUserMenuOpen && isOpen" class="absolute bottom-full left-0 w-full mb-2 bg-gray-800 rounded-lg shadow-lg border border-gray-700">
+              <div class="py-1">
+                <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-700">Profil</a>
+                <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-700 text-red-400 hover:text-red-300">Déconnexion</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- Contenu principal -->
     <div class="flex-1 overflow-auto bg-gray-100">
@@ -152,9 +179,17 @@
 <script setup>
 import { ref } from 'vue'
 const isOpen = ref(true)
+const isUserMenuOpen = ref(false)
 
 const toggleSidebar = () => {
   isOpen.value = !isOpen.value
+  if (!isOpen.value) {
+    isUserMenuOpen.value = false
+  }
+}
+
+const toggleUserMenu = () => {
+  isUserMenuOpen.value = !isUserMenuOpen.value
 }
 </script>
 
