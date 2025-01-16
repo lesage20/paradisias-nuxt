@@ -50,3 +50,15 @@ model Session {
   @@index([userId])
   @@map("sessions")
 }
+
+model RoomType {
+  id            Int      @id @default(autoincrement())
+  name          String   @unique
+  numberAdult   Int
+  numberChildren Int
+  price         Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("room_types")
+}
