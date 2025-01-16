@@ -2,8 +2,8 @@ import { z } from 'zod'
 
 export const createRoomTypeSchema = z.object({
   name: z.string().min(1, 'Le nom est requis'),
-  numberAdult: z.number().min(1, 'Le nombre d\'adultes doit être supérieur à 0'),
-  numberChildren: z.number().min(0, 'Le nombre d\'enfants ne peut pas être négatif'),
+  number_adult: z.number().min(1, 'Le nombre d\'adultes doit être supérieur à 0'),
+  number_children: z.number().min(0, 'Le nombre d\'enfants ne peut pas être négatif'),
   price: z.number().min(0, 'Le prix ne peut pas être négatif'),
 })
 

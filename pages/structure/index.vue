@@ -80,34 +80,36 @@
               />
             </div>
           </div>
-          <div>
-            <label for="number_adult" class="block text-sm font-medium text-gray-700"
-              >Nombre d'adultes</label
-            >
-            <div class="mt-1">
-              <input
-                id="number_adult"
-                v-model.number="form.number_adult"
-                type="number"
-                min="1"
-                required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              />
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="number_adult" class="block text-sm font-medium text-gray-700"
+                >Nombre d'adultes</label
+              >
+              <div class="mt-1">
+                <input
+                  id="number_adult"
+                  v-model.number="form.number_adult"
+                  type="number"
+                  min="1"
+                  required
+                  class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
             </div>
-          </div>
-          <div>
-            <label for="number_children" class="block text-sm font-medium text-gray-700"
-              >Nombre d'enfants</label
-            >
-            <div class="mt-1">
-              <input
-                id="number_children"
-                v-model.number="form.number_children"
-                type="number"
-                min="0"
-                required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              />
+            <div>
+              <label for="number_children" class="block text-sm font-medium text-gray-700"
+                >Nombre d'enfants</label
+              >
+              <div class="mt-1">
+                <input
+                  id="number_children"
+                  v-model.number="form.number_children"
+                  type="number"
+                  min="0"
+                  required
+                  class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
             </div>
           </div>
           <div>
@@ -245,6 +247,7 @@ const submitForm = async () => {
         body: form.value,
       })
     } else {
+      console.log(form.value)
       await $fetch('/api/room-types/create', {
         method: 'POST',
         body: form.value,
