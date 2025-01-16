@@ -18,47 +18,47 @@ model Role {
   name        String   @unique
   description String?
   users       User[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
 
   @@map("roles")
 }
 
 model User {
-  id        String    @id @default(uuid())
-  fullName  String
-  email     String    @unique
-  password  String
-  roleId    String
-  role      Role      @relation(fields: [roleId], references: [id])
-  sessions  Session[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         String    @id @default(uuid())
+  full_name  String
+  email      String    @unique
+  password   String
+  role_id    String
+  role       Role      @relation(fields: [role_id], references: [id])
+  sessions   Session[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
 
-  @@index([roleId])
+  @@index([role_id])
   @@map("users")
 }
 
 model Session {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid())
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+  expires_at DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  @@index([userId])
+  @@index([user_id])
   @@map("sessions")
 }
 
 model RoomType {
-  id            Int      @id @default(autoincrement())
-  name          String   @unique
-  numberAdult   Int
-  numberChildren Int
-  price         Float
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  number_adult    Int
+  number_children Int
+  price           Float
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
 
   @@map("room_types")
 }
