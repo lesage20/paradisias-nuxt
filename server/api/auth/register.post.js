@@ -8,7 +8,8 @@ const prisma = new PrismaClient()
 const registerSchema = z.object({
   fullName: z.string().min(3, 'Le nom complet doit contenir au moins 3 caractères'),
   email: z.string().email('Email invalide'),
-  password: z.string().min(6, 'Le mot de passe doit contenir au moins 6 caractères')
+  password: z.string().min(6, 'Le mot de passe doit contenir au moins 6 caractères'),
+  roleName: z.string().optional() // Rôle optionnel
 })
 
 export default defineEventHandler(async (event) => {
@@ -29,16 +30,32 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Récupération du rôle GERANT
-    const gerantRole = await prisma.role.findFirst({
-      where: { name: 'GERANT' }
-    })
-
-    if (!gerantRole) {
-      throw createError({
-        statusCode: 500,
-        message: 'Rôle GERANT non trouvé'
+    // Récupération du rôle
+    let role
+    if (validatedData.roleName) {
+      // Si un rôle est spécifié, on le recherche
+      role = await prisma.role.findUnique({
+        where: { name: validatedData.roleName }
       })
+
+      if (!role) {
+        throw createError({
+          statusCode: 400,
+          message: 'Rôle invalide'
+        })
+      }
+    } else {
+      // Sinon, on utilise le rôle GERANT par défaut
+      role = await prisma.role.findUnique({
+        where: { name: 'GERANT' }
+      })
+
+      if (!role) {
+        throw createError({
+          statusCode: 500,
+          message: 'Rôle GERANT non trouvé'
+        })
+      }
     }
 
     // Hashage du mot de passe
@@ -50,7 +67,7 @@ export default defineEventHandler(async (event) => {
         fullName: validatedData.fullName,
         email: validatedData.email,
         password: hashedPassword,
-        roleId: gerantRole.id
+        roleId: role.id
       },
       select: {
         id: true,
