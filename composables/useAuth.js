@@ -1,4 +1,6 @@
 export const useAuth = () => {
+  const authStore = useAuthStore()
+
   const register = async (userData) => {
     try {
       const { data, error } = await useFetch('/api/auth/register', {
@@ -30,9 +32,9 @@ export const useAuth = () => {
         throw error.value
       }
 
-      // Stockage du token de session
-      const token = data.value.sessionToken
-      localStorage.setItem('session_token', token)
+      // Stocker les informations dans le store
+      authStore.setUser(data.value.user)
+      authStore.setSessionToken(data.value.sessionToken)
 
       return { data: data.value, error: null }
     } catch (err) {
@@ -43,8 +45,13 @@ export const useAuth = () => {
     }
   }
 
+  const logout = () => {
+    authStore.logout()
+  }
+
   return {
     register,
-    login
+    login,
+    logout
   }
 }
