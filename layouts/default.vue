@@ -262,6 +262,7 @@ html, body {
   height: 100%;
 }
 
+/* Styles de navigation */
 .router-link-active {
   background-color: rgb(55, 65, 81);
   border-radius: 0.5rem;
@@ -270,5 +271,23 @@ html, body {
 .router-link-exact-active {
   background-color: rgb(55, 65, 81);
   border-radius: 0.5rem;
+}
+
+/* Personnalisation de la scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.5);
 }
 </style>
