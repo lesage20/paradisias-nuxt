@@ -11,62 +11,72 @@
     </div>
 
     <form @submit.prevent="handleRegister" class="space-y-4">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <label for="firstName" class="block text-sm font-medium text-gray-700">Prénom</label>
-          <input
-            id="firstName"
-            v-model="firstName"
-            type="text"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          <div class="mt-1">
+            <input
+              id="firstName"
+              v-model="firstName"
+              type="text"
+              required
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
         </div>
 
         <div>
           <label for="lastName" class="block text-sm font-medium text-gray-700">Nom</label>
-          <input
-            id="lastName"
-            v-model="lastName"
-            type="text"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          <div class="mt-1">
+            <input
+              id="lastName"
+              v-model="lastName"
+              type="text"
+              required
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
         </div>
       </div>
 
       <div>
         <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-        <input
-          id="email"
-          v-model="email"
-          type="email"
-          required
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-        />
+        <div class="mt-1">
+          <input
+            id="email"
+            v-model="email"
+            type="email"
+            required
+            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
-          <input
-            id="password"
-            v-model="password"
-            type="password"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          <div class="mt-1">
+            <input
+              id="password"
+              v-model="password"
+              type="password"
+              required
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
         </div>
 
         <div>
           <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
-          <input
-            id="confirmPassword"
-            v-model="confirmPassword"
-            type="password"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          <div class="mt-1">
+            <input
+              id="confirmPassword"
+              v-model="confirmPassword"
+              type="password"
+              required
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
         </div>
       </div>
 
