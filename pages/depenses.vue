@@ -1,34 +1,31 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800">Gestion des Réservations</h1>
+      <h1 class="text-2xl font-bold text-gray-800">Gestion des Dépenses</h1>
       <button
         @click="openModal()"
         class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
-        Nouvelle réservation
+        Nouvelle dépense
       </button>
     </div>
 
-    <!-- Tableau des réservations -->
+    <!-- Tableau des dépenses -->
     <div class="bg-white shadow-md rounded-lg overflow-hidden">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Référence
+              Titre
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Check-in
+              Description
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Check-out
+              Montant
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Chambre
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Statut
+              Date
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
@@ -36,25 +33,22 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="reservation in reservations" :key="reservation.id">
-            <td class="px-6 py-4 whitespace-nowrap">{{ reservation.reference || '-' }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(reservation.check_in) }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(reservation.check_out) }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ reservation.room?.number }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span :class="getStatusClass(reservation.status)">
-                {{ reservation.status }}
-              </span>
+          <tr v-for="depense in depenses" :key="depense.id">
+            <td class="px-6 py-4 whitespace-nowrap">{{ depense.title }}</td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-900 line-clamp-2">{{ depense.description }}</div>
             </td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ formatMontant(depense.amount) }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(depense.date) }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
               <button
-                @click="editReservation(reservation)"
+                @click="editDepense(depense)"
                 class="text-indigo-600 hover:text-indigo-900 mr-3"
               >
                 Modifier
               </button>
               <button
-                @click="deleteReservation(reservation.id)"
+                @click="deleteDepense(depense.id)"
                 class="text-red-600 hover:text-red-900"
               >
                 Supprimer
@@ -69,56 +63,51 @@
     <Modal v-model="showModal">
       <template #header>
         <h3 class="text-lg font-medium text-gray-900">
-          {{ isEditing ? 'Modifier la réservation' : 'Nouvelle réservation' }}
+          {{ isEditing ? 'Modifier la dépense' : 'Nouvelle dépense' }}
         </h3>
       </template>
 
-      <form @submit.prevent="saveReservation" class="space-y-4">
+      <form @submit.prevent="saveDepense" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700">Chambre</label>
-          <select
-            v-model="formData.room_id"
-            class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
-          >
-            <option value="">Sélectionner une chambre</option>
-            <option v-for="room in rooms" :key="room.id" :value="room.id">
-              {{ room.number }} ({{ room.type?.name }})
-            </option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Check-in</label>
+          <label class="block text-sm font-medium text-gray-700">Titre</label>
           <input
-            v-model="formData.check_in"
-            type="datetime-local"
+            v-model="formData.title"
+            type="text"
+            maxlength="50"
             class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             required
           />
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700">Check-out</label>
+          <label class="block text-sm font-medium text-gray-700">Description</label>
+          <textarea
+            v-model="formData.description"
+            rows="3"
+            class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            required
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Montant</label>
           <input
-            v-model="formData.check_out"
-            type="datetime-local"
+            v-model.number="formData.amount"
+            type="number"
+            min="0"
             class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             required
           />
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700">Statut</label>
-          <select
-            v-model="formData.status"
+          <label class="block text-sm font-medium text-gray-700">Date</label>
+          <input
+            v-model="formData.date"
+            type="date"
             class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             required
-          >
-            <option value="en_attente">En attente</option>
-            <option value="confirmee">Confirmée</option>
-            <option value="annulee">Annulée</option>
-          </select>
+          />
         </div>
 
         <div class="flex justify-end space-x-3">
@@ -146,130 +135,104 @@ import { ref, onMounted } from 'vue'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 
-const reservations = ref([])
-const rooms = ref([])
+const depenses = ref([])
 const showModal = ref(false)
 const isEditing = ref(false)
 const editingId = ref(null)
 
 const formData = ref({
-  room_id: '',
-  check_in: '',
-  check_out: '',
-  status: 'en_attente',
-  guest_id: 1, // À remplacer par l'ID du client sélectionné
-  recorded_by_id: 1 // À remplacer par l'ID de l'utilisateur connecté
+  title: '',
+  description: '',
+  amount: 0,
+  date: new Date().toISOString().split('T')[0],
+  spent_by_id: 1 // À remplacer par l'ID de l'utilisateur connecté
 })
 
-// Charger les réservations
-const loadReservations = async () => {
+// Charger les dépenses
+const loadDepenses = async () => {
   try {
-    const response = await $fetch('/api/reservations')
-    reservations.value = response
+    const response = await $fetch('/api/depenses')
+    depenses.value = response
   } catch (error) {
-    console.error('Erreur lors du chargement des réservations:', error)
-  }
-}
-
-// Charger les chambres
-const loadRooms = async () => {
-  try {
-    const response = await $fetch('/api/rooms')
-    rooms.value = response
-  } catch (error) {
-    console.error('Erreur lors du chargement des chambres:', error)
+    console.error('Erreur lors du chargement des dépenses:', error)
   }
 }
 
 // Formater la date
 const formatDate = (date) => {
-  return format(new Date(date), 'PPP à p', { locale: fr })
+  return format(new Date(date), 'PPP', { locale: fr })
 }
 
-// Obtenir la classe CSS pour le statut
-const getStatusClass = (status) => {
-  const classes = {
-    en_attente: 'bg-yellow-100 text-yellow-800',
-    confirmee: 'bg-green-100 text-green-800',
-    annulee: 'bg-red-100 text-red-800'
-  }
-  return `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${classes[status] || ''}`
+// Formater le montant
+const formatMontant = (montant) => {
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(montant)
 }
 
 // Ouvrir le modal pour ajouter/modifier
-const openModal = (reservation = null) => {
-  if (reservation) {
+const openModal = (depense = null) => {
+  if (depense) {
     isEditing.value = true
-    editingId.value = reservation.id
+    editingId.value = depense.id
     formData.value = {
-      ...reservation,
-      check_in: new Date(reservation.check_in).toISOString().slice(0, 16),
-      check_out: new Date(reservation.check_out).toISOString().slice(0, 16)
+      ...depense,
+      date: new Date(depense.date).toISOString().split('T')[0]
     }
   } else {
     isEditing.value = false
     editingId.value = null
     formData.value = {
-      room_id: '',
-      check_in: '',
-      check_out: '',
-      status: 'en_attente',
-      guest_id: 1,
-      recorded_by_id: 1
+      title: '',
+      description: '',
+      amount: 0,
+      date: new Date().toISOString().split('T')[0],
+      spent_by_id: 1
     }
   }
   showModal.value = true
 }
 
-// Sauvegarder une réservation
-const saveReservation = async () => {
+// Sauvegarder une dépense
+const saveDepense = async () => {
   try {
-    const payload = {
-      ...formData.value,
-      check_in: new Date(formData.value.check_in).toISOString(),
-      check_out: new Date(formData.value.check_out).toISOString()
-    }
-
     if (isEditing.value) {
-      await $fetch(`/api/reservations/${editingId.value}`, {
+      await $fetch(`/api/depenses/${editingId.value}`, {
         method: 'PUT',
-        body: payload
+        body: formData.value
       })
     } else {
-      await $fetch('/api/reservations/create', {
+      await $fetch('/api/depenses/create', {
         method: 'POST',
-        body: payload
+        body: formData.value
       })
     }
     
     showModal.value = false
-    await loadReservations()
+    await loadDepenses()
   } catch (error) {
     console.error('Erreur lors de la sauvegarde:', error)
   }
 }
 
-// Supprimer une réservation
-const deleteReservation = async (id) => {
-  if (confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?')) {
+// Supprimer une dépense
+const deleteDepense = async (id) => {
+  if (confirm('Êtes-vous sûr de vouloir supprimer cette dépense ?')) {
     try {
-      await $fetch(`/api/reservations/${id}`, {
+      await $fetch(`/api/depenses/${id}`, {
         method: 'DELETE'
       })
-      await loadReservations()
+      await loadDepenses()
     } catch (error) {
       console.error('Erreur lors de la suppression:', error)
     }
   }
 }
 
-// Modifier une réservation
-const editReservation = (reservation) => {
-  openModal(reservation)
+// Modifier une dépense
+const editDepense = (depense) => {
+  openModal(depense)
 }
 
 onMounted(() => {
-  loadReservations()
-  loadRooms()
+  loadDepenses()
 })
 </script>

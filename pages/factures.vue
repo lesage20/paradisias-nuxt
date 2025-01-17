@@ -1,34 +1,31 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800">Gestion des Réservations</h1>
+      <h1 class="text-2xl font-bold text-gray-800">Gestion des Factures</h1>
       <button
         @click="openModal()"
         class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
-        Nouvelle réservation
+        Nouvelle facture
       </button>
     </div>
 
-    <!-- Tableau des réservations -->
+    <!-- Tableau des factures -->
     <div class="bg-white shadow-md rounded-lg overflow-hidden">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Référence
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Check-in
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Check-out
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Chambre
+              Montant
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Statut
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Réservation
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Date
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
@@ -36,25 +33,24 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="reservation in reservations" :key="reservation.id">
-            <td class="px-6 py-4 whitespace-nowrap">{{ reservation.reference || '-' }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(reservation.check_in) }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(reservation.check_out) }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ reservation.room?.number }}</td>
+          <tr v-for="facture in factures" :key="facture.id">
+            <td class="px-6 py-4 whitespace-nowrap">{{ formatMontant(facture.amount) }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span :class="getStatusClass(reservation.status)">
-                {{ reservation.status }}
+              <span :class="getStatusClass(facture.status)">
+                {{ facture.status }}
               </span>
             </td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ facture.booking?.reference || '-' }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(facture.created_at) }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
               <button
-                @click="editReservation(reservation)"
+                @click="editFacture(facture)"
                 class="text-indigo-600 hover:text-indigo-900 mr-3"
               >
                 Modifier
               </button>
               <button
-                @click="deleteReservation(reservation.id)"
+                @click="deleteFacture(facture.id)"
                 class="text-red-600 hover:text-red-900"
               >
                 Supprimer
@@ -69,40 +65,31 @@
     <Modal v-model="showModal">
       <template #header>
         <h3 class="text-lg font-medium text-gray-900">
-          {{ isEditing ? 'Modifier la réservation' : 'Nouvelle réservation' }}
+          {{ isEditing ? 'Modifier la facture' : 'Nouvelle facture' }}
         </h3>
       </template>
 
-      <form @submit.prevent="saveReservation" class="space-y-4">
+      <form @submit.prevent="saveFacture" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700">Chambre</label>
+          <label class="block text-sm font-medium text-gray-700">Réservation</label>
           <select
-            v-model="formData.room_id"
+            v-model="formData.booking_id"
             class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             required
           >
-            <option value="">Sélectionner une chambre</option>
-            <option v-for="room in rooms" :key="room.id" :value="room.id">
-              {{ room.number }} ({{ room.type?.name }})
+            <option value="">Sélectionner une réservation</option>
+            <option v-for="booking in bookings" :key="booking.id" :value="booking.id">
+              {{ booking.reference }} - {{ formatDate(booking.check_in) }}
             </option>
           </select>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700">Check-in</label>
+          <label class="block text-sm font-medium text-gray-700">Montant</label>
           <input
-            v-model="formData.check_in"
-            type="datetime-local"
-            class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Check-out</label>
-          <input
-            v-model="formData.check_out"
-            type="datetime-local"
+            v-model.number="formData.amount"
+            type="number"
+            min="0"
             class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             required
           />
@@ -116,7 +103,7 @@
             required
           >
             <option value="en_attente">En attente</option>
-            <option value="confirmee">Confirmée</option>
+            <option value="payee">Payée</option>
             <option value="annulee">Annulée</option>
           </select>
         </div>
@@ -146,130 +133,123 @@ import { ref, onMounted } from 'vue'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 
-const reservations = ref([])
-const rooms = ref([])
+const factures = ref([])
+const bookings = ref([])
 const showModal = ref(false)
 const isEditing = ref(false)
 const editingId = ref(null)
 
 const formData = ref({
-  room_id: '',
-  check_in: '',
-  check_out: '',
-  status: 'en_attente',
-  guest_id: 1, // À remplacer par l'ID du client sélectionné
-  recorded_by_id: 1 // À remplacer par l'ID de l'utilisateur connecté
+  booking_id: '',
+  amount: 0,
+  status: 'en_attente'
 })
 
-// Charger les réservations
-const loadReservations = async () => {
+// Charger les factures
+const loadFactures = async () => {
   try {
-    const response = await $fetch('/api/reservations')
-    reservations.value = response
+    const response = await $fetch('/api/factures')
+    factures.value = response
+  } catch (error) {
+    console.error('Erreur lors du chargement des factures:', error)
+  }
+}
+
+// Charger les réservations
+const loadBookings = async () => {
+  try {
+    const response = await $fetch('/api/bookings')
+    bookings.value = response
   } catch (error) {
     console.error('Erreur lors du chargement des réservations:', error)
   }
 }
 
-// Charger les chambres
-const loadRooms = async () => {
-  try {
-    const response = await $fetch('/api/rooms')
-    rooms.value = response
-  } catch (error) {
-    console.error('Erreur lors du chargement des chambres:', error)
-  }
-}
-
 // Formater la date
 const formatDate = (date) => {
-  return format(new Date(date), 'PPP à p', { locale: fr })
+  return format(new Date(date), 'PPP', { locale: fr })
+}
+
+// Formater le montant
+const formatMontant = (montant) => {
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(montant)
 }
 
 // Obtenir la classe CSS pour le statut
 const getStatusClass = (status) => {
   const classes = {
     en_attente: 'bg-yellow-100 text-yellow-800',
-    confirmee: 'bg-green-100 text-green-800',
+    payee: 'bg-green-100 text-green-800',
     annulee: 'bg-red-100 text-red-800'
   }
   return `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${classes[status] || ''}`
 }
 
 // Ouvrir le modal pour ajouter/modifier
-const openModal = (reservation = null) => {
-  if (reservation) {
+const openModal = (facture = null) => {
+  if (facture) {
     isEditing.value = true
-    editingId.value = reservation.id
+    editingId.value = facture.id
     formData.value = {
-      ...reservation,
-      check_in: new Date(reservation.check_in).toISOString().slice(0, 16),
-      check_out: new Date(reservation.check_out).toISOString().slice(0, 16)
+      booking_id: facture.booking_id,
+      amount: facture.amount,
+      status: facture.status
     }
   } else {
     isEditing.value = false
     editingId.value = null
     formData.value = {
-      room_id: '',
-      check_in: '',
-      check_out: '',
-      status: 'en_attente',
-      guest_id: 1,
-      recorded_by_id: 1
+      booking_id: '',
+      amount: 0,
+      status: 'en_attente'
     }
   }
   showModal.value = true
 }
 
-// Sauvegarder une réservation
-const saveReservation = async () => {
+// Sauvegarder une facture
+const saveFacture = async () => {
   try {
-    const payload = {
-      ...formData.value,
-      check_in: new Date(formData.value.check_in).toISOString(),
-      check_out: new Date(formData.value.check_out).toISOString()
-    }
-
     if (isEditing.value) {
-      await $fetch(`/api/reservations/${editingId.value}`, {
+      await $fetch(`/api/factures/${editingId.value}`, {
         method: 'PUT',
-        body: payload
+        body: formData.value
       })
     } else {
-      await $fetch('/api/reservations/create', {
+      await $fetch('/api/factures/create', {
         method: 'POST',
-        body: payload
+        body: formData.value
       })
     }
     
     showModal.value = false
-    await loadReservations()
+    await loadFactures()
   } catch (error) {
     console.error('Erreur lors de la sauvegarde:', error)
   }
 }
 
-// Supprimer une réservation
-const deleteReservation = async (id) => {
-  if (confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?')) {
+// Supprimer une facture
+const deleteFacture = async (id) => {
+  if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
     try {
-      await $fetch(`/api/reservations/${id}`, {
+      await $fetch(`/api/factures/${id}`, {
         method: 'DELETE'
       })
-      await loadReservations()
+      await loadFactures()
     } catch (error) {
       console.error('Erreur lors de la suppression:', error)
     }
   }
 }
 
-// Modifier une réservation
-const editReservation = (reservation) => {
-  openModal(reservation)
+// Modifier une facture
+const editFacture = (facture) => {
+  openModal(facture)
 }
 
 onMounted(() => {
-  loadReservations()
-  loadRooms()
+  loadFactures()
+  loadBookings()
 })
 </script>

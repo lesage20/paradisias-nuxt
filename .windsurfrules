@@ -1,1 +1,2 @@
 1. tous les champs de base de données doivent être en snake_case 
+2. tous les champs de saisie doivent avoir un style identique pour une cohérence visuelle
