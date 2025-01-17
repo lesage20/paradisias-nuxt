@@ -185,6 +185,8 @@
 import { PlusIcon } from '@heroicons/vue/20/solid'
 import Skeleton from '~/components/Skeleton.vue'
 import EmptyState from '~/components/EmptyState.vue'
+import { format } from 'date-fns'
+import { fr } from 'date-fns/locale'
 
 const reservations = ref([])
 const rooms = ref([])

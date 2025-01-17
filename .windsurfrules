@@ -1,2 +1,4 @@
 1. tous les champs de base de données doivent être en snake_case 
 2. tous les champs de saisie doivent avoir un style identique pour une cohérence visuelle
+3. ce projet est un projet js donc les seed tu dois les mettre dans le fichier seed.js
+4. utiliser la syntaxe ES modules pour les imports
