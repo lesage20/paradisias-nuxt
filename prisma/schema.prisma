@@ -109,6 +109,24 @@ model Room {
   @@map("rooms")
 }
 
+model Guest {
+  id            Int           @id @default(autoincrement())
+  first_name    String        @map("firstName") @db.VarChar(50)
+  last_name     String        @map("lastName") @db.VarChar(50)
+  email         String        @unique @db.VarChar(100)
+  phone         String        @db.VarChar(20)
+  address       String?       @db.VarChar(200)
+  city          String?       @db.VarChar(100)
+  country       String?       @db.VarChar(100)
+  postal_code   String?       @map("postalCode") @db.VarChar(20)
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+  bookings      Booking[]
+  reservations  Reservation[]
+
+  @@map("guests")
+}
+
 model Booking {
   id             Int       @id @default(autoincrement())
   reference      String?   @unique @db.VarChar(10)
@@ -127,6 +145,7 @@ model Booking {
   updated_at     DateTime  @updatedAt
   room           Room      @relation(fields: [room_id], references: [id])
   coupon         Coupon?   @relation(fields: [coupon_id], references: [id])
+  guest          Guest     @relation(fields: [guest_id], references: [id])
   factures       Facture[]
 
   @@index([room_id])
@@ -148,6 +167,7 @@ model Reservation {
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
   room           Room     @relation(fields: [room_id], references: [id])
+  guest          Guest     @relation(fields: [guest_id], references: [id])
 
   @@index([room_id])
   @@index([guest_id])

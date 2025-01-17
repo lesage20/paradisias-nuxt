@@ -12,7 +12,3 @@ CREATE TABLE `Session` (
 
 -- AddForeignKey
 ALTER TABLE `Session` ADD CONSTRAINT `Session_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- RedefineIndex
-CREATE INDEX `users_roleId_idx` ON `users`(`roleId`);
-DROP INDEX `users_roleId_fkey` ON `users`;

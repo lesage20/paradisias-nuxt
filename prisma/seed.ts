@@ -7,6 +7,7 @@ async function main() {
   // Suppression des données existantes
   await prisma.booking.deleteMany()
   await prisma.facture.deleteMany()
+  await prisma.guest.deleteMany()
   await prisma.room.deleteMany()
   await prisma.coupon.deleteMany()
   await prisma.room_Type.deleteMany()
@@ -198,6 +199,72 @@ async function main() {
   }
 
   console.log('Rôles créés avec succès !')
+
+  // Création des clients
+  const guests = await Promise.all([
+    prisma.guest.create({
+      data: {
+        first_name: 'Jean',
+        last_name: 'Dupont',
+        email: 'jean.dupont@email.com',
+        phone: '0123456789',
+        address: '123 Rue de Paris',
+        city: 'Paris',
+        country: 'France',
+        postal_code: '75001'
+      }
+    }),
+    prisma.guest.create({
+      data: {
+        first_name: 'Marie',
+        last_name: 'Martin',
+        email: 'marie.martin@email.com',
+        phone: '0987654321',
+        address: '456 Avenue des Champs-Élysées',
+        city: 'Paris',
+        country: 'France',
+        postal_code: '75008'
+      }
+    }),
+    prisma.guest.create({
+      data: {
+        first_name: 'Pierre',
+        last_name: 'Bernard',
+        email: 'pierre.bernard@email.com',
+        phone: '0654789321',
+        address: '789 Boulevard Saint-Germain',
+        city: 'Paris',
+        country: 'France',
+        postal_code: '75006'
+      }
+    }),
+    prisma.guest.create({
+      data: {
+        first_name: 'Sophie',
+        last_name: 'Petit',
+        email: 'sophie.petit@email.com',
+        phone: '0789456123',
+        address: '321 Rue de Rivoli',
+        city: 'Paris',
+        country: 'France',
+        postal_code: '75004'
+      }
+    }),
+    prisma.guest.create({
+      data: {
+        first_name: 'Lucas',
+        last_name: 'Dubois',
+        email: 'lucas.dubois@email.com',
+        phone: '0612345678',
+        address: '147 Avenue Montaigne',
+        city: 'Paris',
+        country: 'France',
+        postal_code: '75008'
+      }
+    })
+  ])
+
+  console.log('Clients créés avec succès !')
   console.log('Base de données initialisée avec succès !')
 }
 
