@@ -11,50 +11,89 @@
     </div>
 
     <!-- Tableau des types de chambres -->
-    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Nom
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Adultes
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Enfants
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Prix
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="roomType in roomTypes" :key="roomType.id">
-            <td class="px-6 py-4 whitespace-nowrap">{{ roomType.name }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ roomType.number_adult }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ roomType.number_children }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ roomType.price }}€</td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button
-                @click="editRoomType(roomType)"
-                class="text-indigo-600 hover:text-indigo-900 mr-3"
-              >
-                Modifier
-              </button>
-              <button
-                @click="deleteRoomType(roomType.id)"
-                class="text-red-600 hover:text-red-900"
-              >
-                Supprimer
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="mt-8 flex flex-col">
+      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+          <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+            <!-- Loading state -->
+            <div v-if="loading" class="bg-white">
+              <div v-for="i in 5" :key="i" class="border-b border-gray-200">
+                <div class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center justify-between space-x-4">
+                    <Skeleton class="h-4 w-32" />
+                    <Skeleton class="h-4 w-16" />
+                    <Skeleton class="h-4 w-16" />
+                    <Skeleton class="h-4 w-24" />
+                    <Skeleton class="h-4 w-36" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Empty state -->
+            <EmptyState
+              v-else-if="!roomTypes.length"
+              title="Aucun type de chambre"
+              description="Commencez par ajouter votre premier type de chambre."
+            >
+              <template #action>
+                <button
+                  @click="openModal"
+                  class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  <PlusIcon class="-ml-0.5 mr-1.5 h-5 w-5" />
+                  Nouveau type
+                </button>
+              </template>
+            </EmptyState>
+
+            <!-- Table content -->
+            <table v-else class="min-w-full divide-y divide-gray-300">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Nom
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Adultes
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Enfants
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Prix
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="roomType in roomTypes" :key="roomType.id">
+                  <td class="px-6 py-4 whitespace-nowrap">{{ roomType.name }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ roomType.number_adult }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ roomType.number_children }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ roomType.price }}€</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <button
+                      @click="editRoomType(roomType)"
+                      class="text-indigo-600 hover:text-indigo-900 mr-3"
+                    >
+                      Modifier
+                    </button>
+                    <button
+                      @click="deleteRoomType(roomType.id)"
+                      class="text-red-600 hover:text-red-900"
+                    >
+                      Supprimer
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Modal pour ajouter/modifier -->
@@ -141,11 +180,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { CreateRoomTypeInput } from '~/server/validations/roomType'
+import { PlusIcon } from '@heroicons/vue/20/solid'
+import Skeleton from '~/components/Skeleton.vue'
+import EmptyState from '~/components/EmptyState.vue'
 
 const roomTypes = ref([])
 const showModal = ref(false)
 const isEditing = ref(false)
 const editingId = ref(null)
+const loading = ref(true)
 
 const formData = ref({
   name: '',
@@ -156,11 +199,15 @@ const formData = ref({
 
 // Charger les types de chambres
 const loadRoomTypes = async () => {
+  loading.value = true
+  
   try {
     const response = await $fetch('/api/room-types')
     roomTypes.value = response
   } catch (error) {
     console.error('Erreur lors du chargement des types de chambres:', error)
+  } finally {
+    loading.value = false
   }
 }
 

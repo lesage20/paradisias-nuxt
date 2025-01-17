@@ -11,62 +11,101 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-      <table class="min-w-full">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              v-for="col in columns"
-              :key="col.name"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              :class="{ 'text-center': col.align === 'center' }"
-            >
-              {{ col.label }}
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="row in floors" :key="row.id">
-            <td
-              v-for="col in columns"
-              :key="col.name"
-              class="px-6 py-4 whitespace-nowrap"
-              :class="{ 'text-center': col.align === 'center' }"
-            >
-              <template v-if="col.name === 'actions'">
-                <div class="flex justify-center space-x-2">
-                  <button
-                    @click="openEditDialog(row)"
-                    class="text-blue-600 hover:text-blue-900"
-                  >
-                    Modifier
-                  </button>
-                  <button
-                    @click="deleteFloor(row.id)"
-                    class="text-red-600 hover:text-red-900"
-                  >
-                    Supprimer
-                  </button>
+    <div class="mt-8 flex flex-col">
+      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+          <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+            <!-- Loading state -->
+            <div v-if="loading" class="bg-white">
+              <div v-for="i in 5" :key="i" class="border-b border-gray-200">
+                <div class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center justify-between space-x-4">
+                    <Skeleton class="h-4 w-12" />
+                    <Skeleton class="h-4 w-32" />
+                    <Skeleton class="h-4 w-48" />
+                    <Skeleton class="h-4 w-20" />
+                    <Skeleton class="h-4 w-36" />
+                  </div>
                 </div>
-              </template>
-              <template v-else-if="col.name === 'status'">
-                <span
-                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                  :class="{
-                    'bg-green-100 text-green-800': row.status === 'actif',
-                    'bg-red-100 text-red-800': row.status === 'inactif'
-                  }"
+              </div>
+            </div>
+
+            <!-- Empty state -->
+            <EmptyState
+              v-else-if="!floors.length"
+              title="Aucun étage"
+              description="Commencez par ajouter votre premier étage."
+            >
+              <template #action>
+                <button
+                  @click="openAddDialog"
+                  class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  {{ row.status }}
-                </span>
+                  <PlusIcon class="-ml-0.5 mr-1.5 h-5 w-5" />
+                  Nouvel étage
+                </button>
               </template>
-              <template v-else>
-                {{ col.format ? col.format(row[col.field]) : row[col.field] }}
-              </template>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </EmptyState>
+
+            <!-- Table content -->
+            <table v-else class="min-w-full divide-y divide-gray-300">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    v-for="col in columns"
+                    :key="col.name"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    :class="{ 'text-center': col.align === 'center' }"
+                  >
+                    {{ col.label }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="row in floors" :key="row.id">
+                  <td
+                    v-for="col in columns"
+                    :key="col.name"
+                    class="px-6 py-4 whitespace-nowrap"
+                    :class="{ 'text-center': col.align === 'center' }"
+                  >
+                    <template v-if="col.name === 'actions'">
+                      <div class="flex justify-center space-x-2">
+                        <button
+                          @click="openEditDialog(row)"
+                          class="text-blue-600 hover:text-blue-900"
+                        >
+                          Modifier
+                        </button>
+                        <button
+                          @click="deleteFloor(row.id)"
+                          class="text-red-600 hover:text-red-900"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </template>
+                    <template v-else-if="col.name === 'status'">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                        :class="{
+                          'bg-green-100 text-green-800': row.status === 'actif',
+                          'bg-red-100 text-red-800': row.status === 'inactif'
+                        }"
+                      >
+                        {{ row.status }}
+                      </span>
+                    </template>
+                    <template v-else>
+                      {{ col.format ? col.format(row[col.field]) : row[col.field] }}
+                    </template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Modal pour ajouter/modifier -->
@@ -152,6 +191,10 @@
 </template>
 
 <script setup lang="ts">
+import { PlusIcon } from '@heroicons/vue/20/solid'
+import Skeleton from '~/components/Skeleton.vue'
+import EmptyState from '~/components/EmptyState.vue'
+
 definePageMeta({
   layout: 'default'
 })
@@ -210,14 +253,19 @@ const form = ref({
   number: 1,
   status: 'inactif',
 })
+const loading = ref(true)
 
 // Fetch floors
-const fetchFloors = async () => {
+const loadFloors = async () => {
+  loading.value = true
+  
   try {
     const response = await $fetch('/api/floors')
     floors.value = response
   } catch (error) {
-    console.error('Erreur lors de la récupération des étages:', error)
+    console.error('Erreur lors du chargement des étages:', error)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -260,7 +308,7 @@ const submitForm = async () => {
         body: form.value,
       })
     }
-    await fetchFloors()
+    await loadFloors()
     closeDialog()
   } catch (error) {
     console.error('Erreur lors de la soumission du formulaire:', error)
@@ -274,7 +322,7 @@ const deleteFloor = async (id: number) => {
       await $fetch(`/api/floors/${id}`, {
         method: 'DELETE',
       })
-      await fetchFloors()
+      await loadFloors()
     } catch (error) {
       console.error('Erreur lors de la suppression de l\'étage:', error)
     }
@@ -283,6 +331,6 @@ const deleteFloor = async (id: number) => {
 
 // Initial fetch
 onMounted(() => {
-  fetchFloors()
+  loadFloors()
 })
 </script>
