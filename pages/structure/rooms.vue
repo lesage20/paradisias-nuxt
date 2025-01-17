@@ -170,7 +170,7 @@ const loadData = async () => {
     const [roomsResponse, floorsResponse, typesResponse] = await Promise.all([
       useFetch('/api/rooms'),
       useFetch('/api/floors'),
-      useFetch('/api/room_types')
+      useFetch('/api/room-types')
     ])
     
     rooms.value = roomsResponse.data.value
