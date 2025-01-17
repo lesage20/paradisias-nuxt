@@ -87,9 +87,9 @@
                   Gestionnaire de Prix
                 </NuxtLink>
                 <NuxtLink
-                  to="/structure/coupon"
+                  to="/structure/coupons"
                   class="block text-sm hover:text-gray-300 py-2 px-3 rounded-lg transition-colors"
-                  :class="{ 'text-white': $route.path === '/structure/coupon', 'text-gray-400': $route.path !== '/structure/coupon' }"
+                  :class="{ 'text-white': $route.path === '/structure/coupons', 'text-gray-400': $route.path !== '/structure/coupon' }"
                 >
                   Coupons
                 </NuxtLink>
