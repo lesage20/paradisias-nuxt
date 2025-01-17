@@ -89,9 +89,16 @@
                 <NuxtLink
                   to="/structure/coupons"
                   class="block text-sm hover:text-gray-300 py-2 px-3 rounded-lg transition-colors"
-                  :class="{ 'text-white': $route.path === '/structure/coupons', 'text-gray-400': $route.path !== '/structure/coupon' }"
+                  :class="{ 'text-white': $route.path === '/structure/coupons', 'text-gray-400': $route.path !== '/structure/coupons' }"
                 >
                   Coupons
+                </NuxtLink>
+                <NuxtLink
+                  to="/structure/room-types"
+                  class="block text-sm hover:text-gray-300 py-2 px-3 rounded-lg transition-colors"
+                  :class="{ 'text-white': $route.path === '/structure/room-types', 'text-gray-400': $route.path !== '/structure/room-types' }"
+                >
+                  Types de chambres
                 </NuxtLink>
                 <NuxtLink
                   to="/structure/housekeeping"

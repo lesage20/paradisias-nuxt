@@ -6,12 +6,18 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const validatedData = createRoomTypeSchema.parse(body)
 
-    const roomType = await prisma.roomType.create({
-      data: validatedData
+    const roomType = await prisma.room_Type.create({
+      data: {
+        name: validatedData.name,
+        number_adult: Number(validatedData.number_adult),
+        number_children: Number(validatedData.number_children),
+        price: Number(validatedData.price)
+      }
     })
 
     return roomType
   } catch (error) {
+    console.error('Erreur création type de chambre:', error)
     if (error.code === 'P2002') {
       throw createError({
         statusCode: 400,

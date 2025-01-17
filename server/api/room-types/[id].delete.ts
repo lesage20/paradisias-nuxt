@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   try {
     const id = Number(event.context.params?.id)
 
-    await prisma.roomType.delete({
+    await prisma.room_Type.delete({
       where: { id }
     })
 

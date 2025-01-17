@@ -8,12 +8,12 @@ export default defineEventHandler(async (event) => {
     
     const validatedData = updateRoomTypeSchema.parse({ ...body, id })
 
-    const roomType = await prisma.roomType.update({
+    const roomType = await prisma.room_Type.update({
       where: { id },
       data: {
         name: validatedData.name,
-        numberAdult: validatedData.numberAdult,
-        numberChildren: validatedData.numberChildren,
+        number_adult: validatedData.numberAdult,
+        number_children: validatedData.numberChildren,
         price: validatedData.price,
       }
     })

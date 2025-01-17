@@ -2,7 +2,7 @@ import { prisma } from '~/server/db'
 
 export default defineEventHandler(async (event) => {
   try {
-    const roomTypes = await prisma.roomType.findMany({
+    const roomTypes = await prisma.room_Type.findMany({
       orderBy: {
         id: 'asc'
       }
