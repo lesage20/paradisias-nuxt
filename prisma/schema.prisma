@@ -51,18 +51,6 @@ model Session {
   @@map("sessions")
 }
 
-model RoomType {
-  id              Int      @id @default(autoincrement())
-  name            String   @unique
-  number_adult    Int
-  number_children Int
-  price           Float
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-
-  @@map("room_types")
-}
-
 model Floor {
   id          Int      @id @default(autoincrement())
   name        String   @unique
@@ -71,6 +59,124 @@ model Floor {
   status      String   @default("inactif")
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
+  rooms       Room[]
 
   @@map("floors")
+}
+
+model Room_Type {
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  number_adult    Int
+  number_children Int
+  price           Float
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  rooms           Room[]
+
+  @@map("room_types")
+}
+
+model Coupon {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(50)
+  description String    @db.Text
+  discount    Int
+  code        String    @db.VarChar(10)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  bookings    Booking[]
+
+  @@map("coupons")
+}
+
+model Room {
+  id           Int           @id @default(autoincrement())
+  number       String        @db.VarChar(5)
+  status       String        @db.VarChar(10)
+  floor_id     Int
+  type_id      Int
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  floor        Floor         @relation(fields: [floor_id], references: [id])
+  type         Room_Type     @relation(fields: [type_id], references: [id])
+  bookings     Booking[]
+  reservations Reservation[]
+
+  @@index([floor_id])
+  @@index([type_id])
+  @@map("rooms")
+}
+
+model Booking {
+  id             Int       @id @default(autoincrement())
+  reference      String?   @unique @db.VarChar(10)
+  check_in       DateTime  @map("checkIn")
+  check_out      DateTime  @map("checkOut")
+  total_price    Int       @map("totalPrice")
+  payment        String    @db.VarChar(15)
+  adults         Int
+  children       Int
+  status         String    @db.VarChar(15)
+  room_id        Int
+  coupon_id      Int?
+  guest_id       Int
+  recorded_by_id Int
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+  room           Room      @relation(fields: [room_id], references: [id])
+  coupon         Coupon?   @relation(fields: [coupon_id], references: [id])
+  factures       Facture[]
+
+  @@index([room_id])
+  @@index([coupon_id])
+  @@index([guest_id])
+  @@index([recorded_by_id])
+  @@map("bookings")
+}
+
+model Reservation {
+  id             Int      @id @default(autoincrement())
+  reference      String?  @unique @db.VarChar(10)
+  check_in       DateTime @map("checkIn")
+  check_out      DateTime @map("checkOut")
+  status         String   @db.VarChar(15)
+  room_id        Int
+  guest_id       Int
+  recorded_by_id Int
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  room           Room     @relation(fields: [room_id], references: [id])
+
+  @@index([room_id])
+  @@index([guest_id])
+  @@index([recorded_by_id])
+  @@map("reservations")
+}
+
+model Facture {
+  id          Int      @id @default(autoincrement())
+  amount      Int
+  status      String   @db.VarChar(15)
+  booking_id  Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  booking     Booking  @relation(fields: [booking_id], references: [id])
+
+  @@index([booking_id])
+  @@map("factures")
+}
+
+model Depense {
+  id           Int      @id @default(autoincrement())
+  title        String   @db.VarChar(50)
+  description  String   @db.Text
+  amount       Int
+  date         DateTime @db.Date
+  spent_by_id  Int
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  @@index([spent_by_id])
+  @@map("depenses")
 }
