@@ -78,7 +78,7 @@
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="booking in bookings" :key="booking.id">
                   <td class="px-6 py-4 whitespace-nowrap">{{ booking.reference }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ booking.guest.full_name }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ booking.guest.last_name }} {{ booking.guest.first_name }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ booking.room.number }} ({{ booking.room.type.name }})
                   </td>
@@ -136,7 +136,7 @@
                 required
               >
                 <option v-for="guest in guests" :key="guest.id" :value="guest.id">
-                  {{ guest.full_name }}
+                  {{ guest.first_name }} {{ guest.last_name }}
                 </option>
               </select>
             </div>
