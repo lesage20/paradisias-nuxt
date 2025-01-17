@@ -33,17 +33,23 @@
               </span>
             </div>
             <div class="mt-2">
-              <p class="text-sm text-gray-600">
-                <span class="font-medium">Client:</span> 
+              <p class="text-sm text-gray-600 pt-1">
+                <span class="font-medium">Client: </span> 
                 {{ room.current_guest?.first_name }} {{ room.current_guest?.last_name }}
               </p>
-              <p class="text-sm text-gray-600">
-                <span class="font-medium">Check-in:</span> 
+              <p class="text-sm text-gray-600 pt-1">
+                <span class="font-medium">Check-in: </span> 
                 {{ formatDate(room.check_in) }}
               </p>
-              <p class="text-sm text-gray-600">
-                <span class="font-medium">Check-out:</span> 
+              <p class="text-sm text-gray-600 pt-1">
+                <span class="font-medium">Check-out: </span> 
                 {{ formatDate(room.check_out) }}
+              </p>
+              <p class="text-sm text-gray-600 pt-1">
+                <span class="font-medium">Temps restant: </span>
+                <span :class="getRemainingTimeColor(room.check_out)">
+                  {{ formatRemainingTime(room.check_out) }}
+                </span>
               </p>
             </div>
           </div>
@@ -93,7 +99,7 @@
 </template>
 
 <script setup lang="ts">
-import { format } from 'date-fns'
+import { format, differenceInMilliseconds, intervalToDuration } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import Skeleton from '~/components/Skeleton.vue'
 import EmptyState from '~/components/EmptyState.vue'
@@ -129,6 +135,46 @@ const formatPrice = (price: number) => {
     style: 'currency',
     currency: 'EUR'
   }).format(price)
+}
+
+// Formater le temps restant
+const formatRemainingTime = (checkOut: string | Date | null) => {
+  if (!checkOut) return '-'
+  
+  const now = new Date()
+  const checkOutDate = new Date(checkOut)
+  
+  // Si le check-out est déjà passé
+  if (checkOutDate < now) {
+    return 'Dépassé'
+  }
+
+  const duration = intervalToDuration({
+    start: now,
+    end: checkOutDate
+  })
+
+  const parts = []
+  if (duration.days) parts.push(`${duration.days}j`)
+  if (duration.hours) parts.push(`${duration.hours}h`)
+  if (duration.minutes) parts.push(`${duration.minutes}min`)
+  
+  return parts.length > 0 ? parts.join(' ') : 'Moins d\'une minute'
+}
+
+// Obtenir la couleur en fonction du temps restant
+const getRemainingTimeColor = (checkOut: string | Date | null) => {
+  if (!checkOut) return ''
+  
+  const now = new Date()
+  const checkOutDate = new Date(checkOut)
+  const diffInHours = differenceInMilliseconds(checkOutDate, now) / (1000 * 60 * 60)
+  
+  if (checkOutDate < now) return 'text-red-600 font-medium'
+  if (diffInHours <= 1) return 'text-red-600 font-medium'
+  if (diffInHours <= 3) return 'text-orange-600 font-medium'
+  if (diffInHours <= 24) return 'text-yellow-600 font-medium'
+  return 'text-green-600'
 }
 
 // Charger les données au montage du composant
