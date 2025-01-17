@@ -25,6 +25,9 @@
               Réduction
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Statut
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Description
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -37,6 +40,17 @@
             <td class="px-6 py-4 whitespace-nowrap">{{ coupon.title }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ coupon.code }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ coupon.discount }}%</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                :class="{
+                  'px-2 py-1 rounded text-sm font-medium': true,
+                  'bg-green-100 text-green-800': !coupon.used,
+                  'bg-red-100 text-red-800': coupon.used
+                }"
+              >
+                {{ coupon.used ? 'Utilisé' : 'Disponible' }}
+              </span>
+            </td>
             <td class="px-6 py-4">{{ coupon.description }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
               <button
@@ -99,6 +113,18 @@
         </div>
 
         <div>
+          <label class="block text-sm font-medium text-gray-700">Statut</label>
+          <div class="mt-1">
+            <input
+              v-model="formData.used"
+              type="checkbox"
+              class="mr-2"
+            />
+            <span>Utilisé</span>
+          </div>
+        </div>
+
+        <div>
           <label class="block text-sm font-medium text-gray-700">Description</label>
           <div class="mt-1">
             <textarea
@@ -141,7 +167,8 @@ const formData = ref<CreateCouponInput>({
   title: '',
   code: '',
   discount: 0,
-  description: ''
+  description: '',
+  used: false
 })
 
 // Charger les coupons
@@ -204,7 +231,8 @@ const resetForm = () => {
     title: '',
     code: '',
     discount: 0,
-    description: ''
+    description: '',
+    used: false
   }
 }
 

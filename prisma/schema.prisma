@@ -83,6 +83,7 @@ model Coupon {
   description String    @db.Text
   discount    Int
   code        String    @db.VarChar(10)
+  used        Boolean   @default(false)
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
   bookings    Booking[]
