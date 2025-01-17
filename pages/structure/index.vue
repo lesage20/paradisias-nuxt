@@ -153,7 +153,7 @@ const columns = [
     required: true,
     label: '#',
     align: 'center',
-    field: (row: any) => row.id,
+    field: "id",
     format: (val: number) => `${val}`,
     sortable: true,
   },

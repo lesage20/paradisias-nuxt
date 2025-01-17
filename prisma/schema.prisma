@@ -62,3 +62,15 @@ model RoomType {
 
   @@map("room_types")
 }
+
+model Floor {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String   @db.Text
+  number      Int
+  status      String   @default("inactif")
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("floors")
+}
