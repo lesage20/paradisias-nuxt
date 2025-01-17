@@ -83,7 +83,7 @@
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
             <div class="ml-5 w-0 flex-1">
@@ -125,6 +125,34 @@
             :options="roomTypeChartOptions"
           />
         </div>
+      </div>
+    </div>
+
+    <!-- Chambres libres -->
+    <div class="mt-8 bg-white shadow rounded-lg p-6">
+      <div class="border-b border-gray-200 pb-4">
+        <h3 class="text-lg font-medium text-gray-900">Chambres disponibles maintenant</h3>
+        <p class="mt-1 text-sm text-gray-500">{{ availableRooms.length }} chambres prêtes à être réservées</p>
+      </div>
+      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <template v-for="room in availableRooms.slice(0, 4)" :key="room.id">
+          <div class="relative rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm hover:border-gray-400">
+            <div class="flex items-center space-x-3">
+              <div class="flex-shrink-0">
+                <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                  <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-900">{{ room.type?.name }}</p>
+                <p class="text-sm text-gray-500">Chambre {{ room.number }}</p>
+                <p class="text-xs text-gray-500">{{ room.floor?.name }}</p>
+              </div>
+            </div>
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -174,11 +202,17 @@ const stats = ref({
   }
 })
 
+const availableRooms = ref([])
+
 // Charger les données
 const loadStats = async () => {
   try {
     const response = await $fetch('/api/dashboard/stats')
     stats.value = response
+
+    // Charger les chambres disponibles
+    const roomsResponse = await $fetch('/api/rooms/available')
+    availableRooms.value = roomsResponse.available
   } catch (error) {
     console.error('Erreur lors du chargement des statistiques:', error)
   }
