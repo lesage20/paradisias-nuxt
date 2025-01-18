@@ -2,18 +2,38 @@ import { prisma } from '~/server/db'
 
 export default defineEventHandler(async (event) => {
   try {
+    const query = getQuery(event)
+    const period = query.period as string || 'today'
+    
     const now = new Date()
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-    const startOfWeek = new Date(now)
-    startOfWeek.setDate(now.getDate() - now.getDay())
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-    const startOfYear = new Date(now.getFullYear(), 0, 1)
+    let startDate: Date
+
+    switch (period) {
+      case 'today':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+        break
+      case 'week':
+        startDate = new Date(now)
+        startDate.setDate(now.getDate() - now.getDay())
+        break
+      case 'month':
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+        break
+      case 'year':
+        startDate = new Date(now.getFullYear(), 0, 1)
+        break
+      default:
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    }
 
     // Statistiques des locations en cours
     const currentBookings = await prisma.booking.count({
       where: {
         status: 'confirmed',
-        check_in: { lte: now },
+        check_in: { 
+          gte: startDate,
+          lte: now 
+        },
         check_out: { gte: now }
       }
     })
@@ -22,7 +42,9 @@ export default defineEventHandler(async (event) => {
     const pendingReservations = await prisma.reservation.count({
       where: {
         status: 'en_attente',
-        check_in: { gte: now }
+        check_in: { 
+          gte: startDate
+        }
       }
     })
 
@@ -30,18 +52,22 @@ export default defineEventHandler(async (event) => {
     const revenueStats = await prisma.booking.groupBy({
       by: ['status'],
       where: {
-        check_in: { gte: startOfYear }
+        check_in: { 
+          gte: startDate 
+        }
       },
       _sum: {
         total_amount: true
       }
     })
 
-    // Évolution des locations par semaine
-    const weeklyBookings = await prisma.booking.groupBy({
+    // Évolution des locations
+    const bookingEvolution = await prisma.booking.groupBy({
       by: ['check_in'],
       where: {
-        check_in: { gte: startOfMonth }
+        check_in: { 
+          gte: startDate 
+        }
       },
       _count: true,
       orderBy: {
@@ -57,7 +83,10 @@ export default defineEventHandler(async (event) => {
             bookings: {
               where: {
                 status: 'confirmed',
-                check_in: { lte: now },
+                check_in: { 
+                  gte: startDate,
+                  lte: now 
+                },
                 check_out: { gte: now }
               }
             }
@@ -72,11 +101,13 @@ export default defineEventHandler(async (event) => {
       occupied: type.rooms.reduce((acc, room) => acc + (room.bookings.length > 0 ? 1 : 0), 0)
     }))
 
-    // Durée moyenne des séjours
-    const averageStayDuration = await prisma.booking.aggregate({
+    // Durée moyenne des séjours et prix moyen
+    const averageStats = await prisma.booking.aggregate({
       where: {
         status: 'completed',
-        check_out: { gte: startOfMonth }
+        check_out: { 
+          gte: startDate 
+        }
       },
       _avg: {
         total_amount: true
@@ -87,23 +118,23 @@ export default defineEventHandler(async (event) => {
       currentStats: {
         activeBookings: currentBookings,
         pendingReservations,
-        availableRooms: 0 // Sera calculé côté client
+        period: period
       },
       revenue: {
         total: revenueStats.reduce((acc, stat) => acc + (stat._sum.total_amount || 0), 0),
         byStatus: revenueStats
       },
-      weeklyBookings: weeklyBookings,
+      bookingEvolution,
       roomTypeOccupancy,
       averageStats: {
-        stayPrice: averageStayDuration._avg.total_amount
+        stayPrice: averageStats._avg.total_amount
       }
     }
   } catch (error) {
-    console.error('Erreur lors de la récupération des statistiques:', error)
+    console.error('Erreur lors du chargement des statistiques:', error)
     throw createError({
       statusCode: 500,
-      message: "Erreur lors de la récupération des statistiques"
+      message: 'Erreur lors du chargement des statistiques'
     })
   }
 })

@@ -1,0 +1,176 @@
+{
+  "coupons": [],
+  "floors": [
+    {
+      "name": "Pas d'etage",
+      "description": "Cet etage indique qu'il n'y a pas d'étage",
+      "number": 0,
+      "status": "actif",
+      "created_at": "2023-09-14 16:49:48.524830",
+      "updated_at": "2023-09-14 16:49:48.524872"
+    }
+  ],
+  "room_types": [
+    {
+      "name": "Junior",
+      "description": "Ce type de chambre represente les chambre standard",
+      "numberAdult": 3,
+      "numberChildren": 1,
+      "price": 12500,
+      "created_at": "2023-09-14 16:52:01.570299",
+      "updated_at": "2023-09-14 16:52:01.570347"
+    },
+    {
+      "name": "senior",
+      "description": "senior",
+      "numberAdult": 1,
+      "numberChildren": 1,
+      "price": 15000,
+      "created_at": "2023-09-14 17:01:56.094917",
+      "updated_at": "2023-09-14 17:01:56.094962"
+    },
+    {
+      "name": "mini-suite",
+      "description": "mini-suite",
+      "numberAdult": 1,
+      "numberChildren": 1,
+      "price": 25000,
+      "created_at": "2023-09-14 17:02:48.299538",
+      "updated_at": "2023-09-14 17:02:48.299587"
+    }
+  ],
+  "depenses": [],
+  "reservations": [],
+  "rooms": [
+    {
+      "number": "CH1",
+      "created_at": "2023-09-14 16:52:33.465171",
+      "updated_at": "2023-09-14 16:52:33.465214",
+      "floor_id": 9,
+      "type_id": 18,
+      "status": "lp"
+    },
+    {
+      "number": "ch2",
+      "created_at": "2023-09-14 17:06:50.048166",
+      "updated_at": "2023-09-14 17:06:50.048207",
+      "floor_id": 9,
+      "type_id": 18,
+      "status": "lp"
+    },
+    {
+      "number": "CH3",
+      "created_at": "2023-09-14 17:08:11.082803",
+      "updated_at": "2023-09-14 17:08:11.082838",
+      "floor_id": 9,
+      "type_id": 18,
+      "status": "lp"
+    },
+    {
+      "number": "CH3",
+      "created_at": "2023-09-14 17:08:56.105272",
+      "updated_at": "2023-09-14 17:08:56.105311",
+      "floor_id": 9,
+      "type_id": 18,
+      "status": "lp"
+    },
+    {
+      "number": "CH4",
+      "created_at": "2023-09-14 17:09:16.971960",
+      "updated_at": "2023-09-14 17:09:16.972003",
+      "floor_id": 9,
+      "type_id": 18,
+      "status": "lp"
+    },
+    {
+      "number": "CH5",
+      "created_at": "2023-09-14 17:09:41.544951",
+      "updated_at": "2023-09-14 17:09:41.545010",
+      "floor_id": 9,
+      "type_id": 18,
+      "status": "lp"
+    },
+    {
+      "number": "CH6",
+      "created_at": "2023-09-14 17:10:03.414226",
+      "updated_at": "2023-09-14 17:10:03.414263",
+      "floor_id": 9,
+      "type_id": 18,
+      "status": "lp"
+    },
+    {
+      "number": "CH7",
+      "created_at": "2023-09-14 17:10:24.045849",
+      "updated_at": "2023-09-14 17:10:24.045887",
+      "floor_id": 9,
+      "type_id": 18,
+      "status": "lp"
+    },
+    {
+      "number": "CH8",
+      "created_at": "2023-09-14 17:10:46.820092",
+      "updated_at": "2023-09-14 17:10:46.820129",
+      "floor_id": 9,
+      "type_id": 18,
+      "status": "lp"
+    },
+    {
+      "number": "CH9",
+      "created_at": "2023-09-14 17:11:09.364360",
+      "updated_at": "2023-09-14 17:11:09.364424",
+      "floor_id": 9,
+      "type_id": 19,
+      "status": "lp"
+    },
+    {
+      "number": "CH10",
+      "created_at": "2023-09-14 17:11:34.943643",
+      "updated_at": "2023-09-14 17:11:34.943681",
+      "floor_id": 9,
+      "type_id": 19,
+      "status": "lp"
+    },
+    {
+      "number": "CH11",
+      "created_at": "2023-09-14 17:11:54.785934",
+      "updated_at": "2023-09-14 17:11:54.785971",
+      "floor_id": 9,
+      "type_id": 19,
+      "status": "lp"
+    },
+    {
+      "number": "CH12",
+      "created_at": "2023-09-14 17:12:21.715975",
+      "updated_at": "2023-09-14 17:12:21.716013",
+      "floor_id": 9,
+      "type_id": 19,
+      "status": "lp"
+    },
+    {
+      "number": "CH14",
+      "created_at": "2023-09-14 17:12:57.241957",
+      "updated_at": "2023-09-14 17:12:57.242014",
+      "floor_id": 9,
+      "type_id": 19,
+      "status": "lp"
+    },
+    {
+      "number": "CH15",
+      "created_at": "2023-09-14 17:13:24.800664",
+      "updated_at": "2023-09-14 17:13:24.800700",
+      "floor_id": 9,
+      "type_id": 20,
+      "status": "lp"
+    },
+    {
+      "number": "CH16",
+      "created_at": "2023-09-14 17:13:53.037629",
+      "updated_at": "2023-09-14 17:13:53.037667",
+      "floor_id": 9,
+      "type_id": 20,
+      "status": "lp"
+    }
+  ],
+  "bookings": [],
+  "factures": []
+}

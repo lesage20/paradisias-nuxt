@@ -1,9 +1,19 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <!-- En-tête -->
-    <div class="mb-8">
-      <h1 class="text-2xl font-bold text-gray-900">Tableau de Bord</h1>
-      <p class="mt-2 text-sm text-gray-600">Vue d'ensemble de l'activité de l'hôtel</p>
+    <div class="mb-8 flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Tableau de Bord</h1>
+        <p class="mt-2 text-sm text-gray-600">Vue d'ensemble de l'activité de l'hôtel</p>
+      </div>
+      <div class="flex items-center space-x-4">
+        <select v-model="selectedPeriod" @change="loadStats" class="block w-48 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+          <option value="today">Aujourd'hui</option>
+          <option value="week">Cette semaine</option>
+          <option value="month">Ce mois</option>
+          <option value="year">Cette année</option>
+        </select>
+      </div>
     </div>
 
     <!-- Statistiques principales -->
@@ -174,11 +184,18 @@ const stats = ref({
   }
 })
 
-// Charger les données
+// État pour la période sélectionnée
+const selectedPeriod = ref('today')
+
+// Fonction pour charger les statistiques
 const loadStats = async () => {
   try {
-    const response = await $fetch('/api/dashboard/stats')
-    stats.value = response
+    const { data } = await useFetch('/api/dashboard/stats', {
+      query: {
+        period: selectedPeriod.value
+      }
+    })
+    stats.value = data.value
   } catch (error) {
     console.error('Erreur lors du chargement des statistiques:', error)
   }
