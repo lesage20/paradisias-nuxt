@@ -34,4 +34,4 @@ jobs:
         uses: nuxt-hub/action@v1
         id: deploy
         with:
-          project-key: paradisias-nuxt-behi
+          project-key: paradisias-nuxt-mg5k
